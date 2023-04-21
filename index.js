@@ -1,4 +1,9 @@
 import { registerRootComponent } from 'expo';
+import 'react-native-url-polyfill/auto';
+import { en, registerTranslation } from 'react-native-paper-dates'
+
+
+registerTranslation('en', en)
 
 import App from './App';
 

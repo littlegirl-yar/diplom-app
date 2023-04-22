@@ -1,65 +1,75 @@
-import React, {useContext, useState} from 'react';
-import {
-  Button,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-  StyleSheet,
-} from 'react-native';
+import React, { useContext, useState } from 'react';
+import { TouchableOpacity, View, StyleSheet } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {AuthContext} from '../context/AuthContext';
+import { AuthContext } from '../context/AuthContext';
+import { Text, Button, TextInput } from 'react-native-paper';
 
-const RegisterScreen = ({navigation}) => {
+const RegisterScreen = ({ navigation }) => {
   const [name, setName] = useState(null);
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
   const [passwordConfirmation, setPasswordConfirmation] = useState(null);
+  const [visible, setVisible] = useState(false);
+  const { isLoading, register } = useContext(AuthContext);
 
-  const {isLoading, register} = useContext(AuthContext);
+  const toggleVisibility = () => {
+    setVisible((prevVisible) => !prevVisible);
+  };
 
   return (
     <View style={styles.container}>
       <Spinner visible={isLoading} />
       <View style={styles.wrapper}>
         <TextInput
+          mode='outlined'
           style={styles.input}
           value={name}
           placeholder="Enter name"
           onChangeText={text => setName(text)}
+          activeOutlineColor='royalblue'
         />
-
         <TextInput
+          mode='outlined'
           style={styles.input}
           value={email}
           placeholder="Enter email"
           onChangeText={text => setEmail(text)}
+          activeOutlineColor='royalblue'
         />
-
         <TextInput
+          mode='outlined'
           style={styles.input}
           value={password}
           placeholder="Enter password"
           onChangeText={text => setPassword(text)}
-          secureTextEntry
+          activeOutlineColor='royalblue'
+          secureTextEntry={!visible}
+          right={
+            <TextInput.Icon
+              icon={visible ? 'eye' : 'eye-off'}
+              onPress={toggleVisibility}
+            />
+          }
         />
-
         <TextInput
+          mode='outlined'
           style={styles.input}
           value={passwordConfirmation}
-          placeholder="Enter password"
+          placeholder="Enter password again"
           onChangeText={text => setPasswordConfirmation(text)}
-          secureTextEntry
+          activeOutlineColor='royalblue'
+          secureTextEntry={!visible}
+          right={
+            <TextInput.Icon
+              icon={visible ? 'eye' : 'eye-off'}
+              onPress={toggleVisibility}
+            />
+          }
         />
-
-        <Button
-          title="Register"
-          onPress={() => {
-            register(name, email, password, passwordConfirmation);
-          }}
-        />
-
-        <View style={{flexDirection: 'row', marginTop: 20}}>
+        <Button onPress={() => {
+          register(name, email, password, passwordConfirmation);
+        }} mode="contained" buttonColor='royalblue' textColor='white'>REGISTER</Button>
+        <View style={{ flexDirection: 'row', marginTop: 12, padding: 0 }}>
           <Text>Already have an accoutn? </Text>
           <TouchableOpacity onPress={() => navigation.navigate('Login')}>
             <Text style={styles.link}>Login</Text>
@@ -81,13 +91,10 @@ const styles = StyleSheet.create({
   },
   input: {
     marginBottom: 12,
-    borderWidth: 1,
-    borderColor: '#bbb',
-    borderRadius: 5,
-    paddingHorizontal: 14,
   },
   link: {
-    color: 'blue',
+    color: 'royalblue',
+    fontWeight: 'bold'
   },
 });
 

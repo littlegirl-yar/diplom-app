@@ -4,119 +4,28 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import { AuthContext } from '../context/AuthContext';
 import { Text, TouchableRipple, Surface, Button } from 'react-native-paper';
 import { DatePickerModal, TimePickerModal } from 'react-native-paper-dates';
+import DateTimePicker from '../components/DateTimePicker';
 
 const GarageScreen = ({ route, navigation }) => {
   const { garageId } = route.params;
-  const [date, setDate] = React.useState(undefined);
-  const [open, setOpen] = React.useState(false);
-  const [visible, setVisible] = React.useState(false);
+  const [toDate, setToDate] = React.useState(new Date());
+  const [fromDate, setFromDate] = React.useState(new Date());
 
-  function onDismissSingle() {
-    setOpen(false);
-  }
-  function onConfirmSingle(params) {
-    setOpen(false);
-    setDate(params.date);
+  const changeToDate = (selectedToDate) => {
+    setToDate(selectedToDate);
   }
 
-  const onDismissTime = () => {
-    setVisible(false);
-  }
-
-  const onConfirmTime = ({ hours, minutes }) => {
-    setVisible(false);
-    console.log(date.toString())
-    if (date) {
-      let newDate = date;
-      newDate.setHours(hours);
-      newDate.setMinutes(minutes);
-      newDate.setSeconds(0);
-      setDate(newDate);
-    }
-  }
-
-  const dateForOutput = (date) => {
-    let stringDate = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`;
-    return stringDate
+  const changeFromDate = (selectedFromDate) => {
+    setFromDate(selectedFromDate);
   }
 
   return (
     <View style={styles.container}>
-      {/* first time picker */}
       <View style={styles.sectionContainer}>
-        <Text>
-          <Text style={styles.simpleText}>From: </Text>
-          <Text style={[styles.simpleText, { fontWeight: "bold" }]}>{date && dateForOutput(date)}</Text>
-        </Text>
-        <View style={styles.timeContainer}>
-          <View style={styles.buttonDateTime}>
-            <Button onPress={() => setOpen(true)} uppercase={false} mode="contained" buttonColor='royalblue' textColor='white'>
-              Select From Date
-            </Button>
-          </View>
-          <View style={styles.buttonDateTime}>
-            <Button onPress={() => setVisible(true)} uppercase={false} mode="contained" buttonColor='royalblue' textColor='white'>
-              Select From Time
-            </Button>
-          </View>
-          <DatePickerModal
-            textColor='royalblue'
-            locale="en"
-            mode="single"
-            visible={open}
-            onDismiss={onDismissSingle}
-            date={date}
-            onConfirm={onConfirmSingle}
-            inputEnabled={false}
-            startYear={2022}
-            endYear={2028}
-          />
-          <TimePickerModal
-            textColor='royalblue'
-            visible={visible}
-            onDismiss={onDismissTime}
-            onConfirm={onConfirmTime}
-            use24HourClock={true}
-          />
-        </View>
+        <DateTimePicker changeDateTime={changeFromDate} toOrFrom={"From"} minDate={new Date()} />
       </View>
-      {/* second time picker */}
       <View style={styles.sectionContainer}>
-        <Text>
-          <Text style={styles.simpleText}>To: </Text>
-          <Text style={[styles.simpleText, { fontWeight: "bold" }]}>{date && dateForOutput(date)}</Text>
-        </Text>
-        <View style={styles.timeContainer}>
-          <View style={styles.buttonDateTime}>
-            <Button onPress={() => setOpen(true)} uppercase={false} mode="contained" buttonColor='royalblue'textColor='white'>
-              Select To Date
-            </Button>
-          </View>
-          <View style={styles.buttonDateTime}>
-            <Button onPress={() => setVisible(true)} uppercase={false} mode="contained" buttonColor='royalblue' textColor='white'>
-              Select To Time
-            </Button>
-          </View>
-          <DatePickerModal
-            textColor='royalblue'
-            locale="en"
-            mode="single"
-            visible={open}
-            onDismiss={onDismissSingle}
-            date={date}
-            onConfirm={onConfirmSingle}
-            inputEnabled={false}
-            startYear={2022}
-            endYear={2028}
-          />
-          <TimePickerModal
-            textColor='royalblue'
-            visible={visible}
-            onDismiss={onDismissTime}
-            onConfirm={onConfirmTime}
-            use24HourClock={true}
-          />
-        </View>
+        <DateTimePicker changeDateTime={changeToDate} toOrFrom={"To"} minDate={fromDate} />
       </View>
     </View>
   );

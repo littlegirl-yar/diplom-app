@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text, TouchableRipple, Checkbox } from 'react-native-paper';
 
-const CheckBoxRow = ({ onPressOption, lable, optionValue }) => {
+const CheckBoxRow = ({ onPressOption, lable, optionValue, priceText }) => {
 
   const [checked, setChecked] = useState(false);
 
@@ -15,7 +15,7 @@ const CheckBoxRow = ({ onPressOption, lable, optionValue }) => {
     <View>
       <TouchableRipple style={{ width: "100%" }} onPress={() => setCheckedOption()}>
         <View style={styles.checkBoxRow}>
-          <Text>{lable}</Text>
+          <Text>{lable} {`(+0.${priceText}$/h)`}</Text>
           <View pointerEvents="none">
             <Checkbox color='royalblue' uncheckedColor='royalblue' status={checked ? 'checked' : 'unchecked'} />
           </View>

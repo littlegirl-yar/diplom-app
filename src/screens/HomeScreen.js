@@ -13,12 +13,12 @@ const HomeScreen = ({ navigation }) => {
       <View style={styles.wolcomContainer}>
         <Text style={{ fontSize: 24, fontWeight: "bold" }}>Welcome {userInfo.name}</Text>
       </View>
-      <Surface style={[styles.surface, { marginTop: 0 }]} >
+      <Surface style={[styles.surface, { marginTop: 0 }]} elevation={4}>
         <TouchableRipple style={styles.ripple} rippleColor="rgba(0, 0, 0, .32)" onPress={() => { }} borderless>
           <Text style={styles.buttonText}>My reservations</Text>
         </TouchableRipple>
       </Surface>
-      <Surface style={styles.surface} elevation={1}>
+      <Surface style={styles.surface} elevation={4}>
         <TouchableRipple style={styles.ripple} rippleColor="rgba(0, 0, 0, .32)" onPress={() => { logout() }} borderless>
           <Text style={styles.buttonText}>Logout</Text>
         </TouchableRipple>
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
   },
   wolcomContainer: {
     marginVertical: 10,
-    width: '90%',
+    width: '91%',
     alignItems: "center",
   },
   ripple: {

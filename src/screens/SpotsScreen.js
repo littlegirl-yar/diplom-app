@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, ScrollView } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
-import { Text, TouchableRipple, Surface, Button, Checkbox, SegmentedButtons } from 'react-native-paper';;
+import { Text, TouchableRipple, Surface, Button, Chip } from 'react-native-paper';;
 import axios from 'axios';
 import { BASE_URL } from '../config';
+import * as WebBrowser from 'expo-web-browser';
 
 const SpotsScreen = ({ route, navigation }) => {
   const { garageId, start, end, options, size } = route.params;
   const [spotsInfoLoading, setSpotsInfoLoading] = useState(true);
   const [spots, setSpots] = useState(undefined);
+  const [selectedSpotId, setSelectedSpotId] = useState(undefined);
+  const [reservationId, setReservationId] = useState(undefined);
+  const [price, setPrice] = useState(null);
+  const [resultWeb, setResultWeb] = useState(null);
 
   const buildFilterUrl = () => {
     const searchParams = new URLSearchParams();
@@ -36,6 +41,49 @@ const SpotsScreen = ({ route, navigation }) => {
     }
   }
 
+  const selectSpot = async (sId) => {
+    try {
+
+      if(sId === selectedSpotId) return;
+      setSelectedSpotId(sId);
+      setSpotsInfoLoading(true);
+      
+      let response = await axios.post(`${BASE_URL}/reservations`, {start: start, end: end, spot_id: sId});
+      let reservationResponse = response.data.data;
+      console.log(reservationResponse);
+      setReservationId(reservationResponse.id);
+      
+      response = await axios.post(`${BASE_URL}/calculate-payment`, {reservation_id: reservationResponse.id});
+      let priceResponse = response.data;
+      console.log(priceResponse);
+      setPrice(priceResponse)
+      
+      setSpotsInfoLoading(false);
+    }
+    catch (error) {
+      console.log(`register error ${error}`);
+      setSpotsInfoLoading(false);
+    }
+  }
+
+  const getCheckoutFrom = async () => {
+    try {
+      setSpotsInfoLoading(true);
+      const response = await axios.get(`${BASE_URL}/checkout/${reservationId}`);
+      let stripeResponse = response.data;
+      console.log(stripeResponse);
+
+      let result = await WebBrowser.openBrowserAsync(stripeResponse.url);
+      setResultWeb(result);
+      navigation.navigate('Map')
+      setSpotsInfoLoading(false);
+    }
+    catch (error) {
+      console.log(`register error ${error}`);
+      setSpotsInfoLoading(false);
+    }
+  }
+
   useEffect(() => {
     getSpots();
   }, []);
@@ -45,23 +93,36 @@ const SpotsScreen = ({ route, navigation }) => {
       <View style={styles.container}>
         <Spinner visible={spotsInfoLoading} />
         <View style={styles.sectionContainer}>
+          {spots && <>
+            <Text style={styles.title}>{spots.length} Spots available</Text>
+            <View style={styles.priceContainer}>
+              <Text style={styles.priceText}>Price: {price/100}$</Text>
+              <Button onPress={() => {getCheckoutFrom()}} mode="contained" buttonColor='royalblue' textColor='white'>Continue to payment</Button>
+            </View>
+          </>}
           {spots && spots.map((s,i) => 
-          (
-            <Surface style={styles.spotSurface} key={spots.id} elevation={4}>
-              <Text style={styles.spotText}>
-                id: {s.id}
-              </Text >
-              <Text style={styles.spotText}>
-                floor: {s.floor}
-              </Text>
-              <Text style={styles.spotText}>
-                number: {s.number}
-              </Text>
-              <Text style={styles.spotText}>
-                size: {s.size}
-              </Text>
-            </Surface>
-          ))}
+          <>
+            <TouchableRipple key={s.id} style={styles.ripple} rippleColor="rgba(0, 0, 0, .32)" onPress={() => {selectSpot(s.id)}} borderless>
+              <Surface style={[styles.spotSurface, s.id === selectedSpotId? styles.spotSelected : null ]} elevation={4} >
+                    <Text style={styles.spotText}>
+                      <Text>Floor </Text>
+                      <Text style={{fontWeight:"bold"}}>{s.floor}</Text>
+                    </Text>
+                    <Text style={styles.spotText}>
+                      <Text>Spot no. </Text>
+                      <Text style={{fontWeight:"bold"}}>{s.number}</Text>
+                    </Text>
+                    <View style={styles.rowChips}>
+                      {
+                        s.attributes.map((a,ai) => 
+                          <Chip onPress={() => {}} style={styles.chip} textStyle={{color:"royalblue"}} key={ai}>{a}</Chip>
+                        )
+                      }
+                    </View>
+                  </Surface>
+            </TouchableRipple>
+          </> 
+          )}
         </View>
       </View>
     </ScrollView>
@@ -69,13 +130,23 @@ const SpotsScreen = ({ route, navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  rowChips: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  chip: {
+    marginRight: 8,
+  },
+  ripple: {
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 10,
+  },
   container: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'flex-start',
-  },
-  simpleText: {
-    fontSize: 20,
   },
   sectionContainer: {
     width: '91%',
@@ -84,14 +155,35 @@ const styles = StyleSheet.create({
   },
   spotSurface: {
     padding: 10,
-    width: "70%",
+    width: "100%",
     borderRadius: 10,
     marginBottom: 7,
+    borderWidth: 1
+  },
+  spotSelected:{
+    borderColor:"royalblue",
   },
   spotText: {
     fontSize: 16,
     marginBottom: 5
-  }
+  },
+  title:{
+    fontSize:20,
+    fontWeight:"bold",
+    marginBottom:20,
+    color: "green"
+  },
+  priceContainer:{
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems:"center",
+    width: "100%",
+    marginBottom:20
+  },
+  priceText: {
+    fontSize: 20,
+    fontWeight:"bold"
+  },
 });
 
 export default SpotsScreen;

@@ -1,1 +1,1 @@
-export const BASE_URL = 'https://yaromirdiplom.loca.lt/api';
+export const BASE_URL = 'https://yaromirparking1.loca.lt/api';

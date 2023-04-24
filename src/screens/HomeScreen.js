@@ -46,12 +46,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     height: 60,
-    borderRadius: 50,
+    borderRadius: 10,
   },
   surface: {
     width: '90%',
     height: 60,
-    borderRadius: 50,
+    borderRadius: 10,
     marginTop: 10
   },
 });

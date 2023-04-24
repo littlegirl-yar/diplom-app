@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, ScrollView } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { AuthContext } from '../context/AuthContext';
 import { Text, TouchableRipple, Surface, Button, Checkbox, SegmentedButtons } from 'react-native-paper';
@@ -48,29 +48,14 @@ const GarageScreen = ({ route, navigation }) => {
     }
   }
 
-  const buildFilterUrl = () => {
-    const searchParams = new URLSearchParams();
-    options.forEach((entry) => {
-      searchParams.append('attributes[]', entry)
+  const showSpots = () => {
+    navigation.navigate('Spots', {
+      garageId: garageId,
+      start: fromDate.toISOString(),
+      end: toDate.toISOString(),
+      options: options,
+      size: size,
     });
-    searchParams.append("start", fromDate.toISOString())
-    searchParams.append("end", toDate.toISOString())
-    searchParams.append("size", size)
-    return searchParams.toString()
-  }
-
-  const getSpots = async () => {
-    try {
-      setGarageInfoLoading(true);
-      const response = await axios.get(`${BASE_URL}/garages/${garageId}/spots?${buildFilterUrl()}`);
-      let spotsResponse = response.data.data;
-      console.log(spotsResponse)
-      setGarageInfoLoading(false);
-    }
-    catch (error) {
-      console.log(`register error ${error}`);
-      setGarageInfoLoading(false);
-    }
   }
 
   useEffect(() => {
@@ -80,13 +65,14 @@ const GarageScreen = ({ route, navigation }) => {
   return (
     <View style={styles.container}>
       <Spinner visible={garageInfoLoading} />
-      <View style={styles.sectionContainer}>
-        <DateTimePicker changeDateTime={changeFromDate} toOrFrom={"From"} minDate={new Date()} />
-      </View>
-      <View style={styles.sectionContainer}>
-        <DateTimePicker changeDateTime={changeToDate} toOrFrom={"To"} minDate={fromDate} />
-      </View>
       {garageInfo ? <>
+        <Text style={styles.title}>{garageInfo.name}</Text>
+        <View style={styles.sectionContainer}>
+          <DateTimePicker changeDateTime={changeFromDate} toOrFrom={"From"} minDate={new Date()} />
+        </View>
+        <View style={styles.sectionContainer}>
+          <DateTimePicker changeDateTime={changeToDate} toOrFrom={"To"} minDate={fromDate} />
+        </View>
         <View style={styles.sectionContainer}>
           <CheckBoxRow lable={"Electric"} optionValue={"electric"} onPressOption={changeOptions} priceText={garageInfo.attributes.electric} />
           <CheckBoxRow lable={"For Women"} optionValue={"for_women"} onPressOption={changeOptions} priceText={garageInfo.attributes.for_women} />
@@ -105,12 +91,12 @@ const GarageScreen = ({ route, navigation }) => {
             ]}
           />
         </View>
-      </> : null}
-      <View style={[styles.sectionContainer, { alignItems: "center" }]}>
-        <Button onPress={() => { getSpots() }} mode="contained" buttonColor='royalblue' textColor='white'>
+        <View style={[styles.sectionContainer, { alignItems: "center" }]}>
+        <Button onPress={() => { showSpots() }} mode="contained" buttonColor='royalblue' textColor='white'>
           Show available spots
         </Button>
       </View>
+      </> : null}
     </View>
   );
 };
@@ -119,7 +105,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
   },
   simpleText: {
     fontSize: 20,
@@ -127,8 +113,13 @@ const styles = StyleSheet.create({
   sectionContainer: {
     width: '91%',
     alignItems: "flex-start",
-    margin: 7,
-  }
+    marginVertical:7,
+  },
+  title:{
+    fontSize:20,
+    fontWeight:"bold",
+    marginBottom:30,
+  },
 });
 
 export default GarageScreen;

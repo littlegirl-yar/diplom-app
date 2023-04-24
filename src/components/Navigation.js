@@ -12,6 +12,7 @@ import RegisterScreen from '../screens/RegisterScreen';
 import SplashScreen from '../screens/SplashScreen';
 import MapScreen from '../screens/MapScreen';
 import GarageScreen from '../screens/GarageScreen';
+import SpotsScreen from '../screens/SpotsScreen';
 import { AuthContext } from '../context/AuthContext';
 
 const MapStack = createNativeStackNavigator();
@@ -21,6 +22,7 @@ function MapStackScreen() {
     <MapStack.Navigator>
       <MapStack.Screen name="Map" component={MapScreen} />
       <MapStack.Screen name="Garage" component={GarageScreen} />
+      <MapStack.Screen name="Spots" component={SpotsScreen} />
     </MapStack.Navigator>
   );
 }

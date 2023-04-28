@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { Text, Button } from 'react-native-paper';
 import { DatePickerModal, TimePickerModal } from 'react-native-paper-dates';
 
-const DateTimePicker = ({ changeDateTime, toOrFrom, minDate,}) => {
+const DateTimePicker = ({ changeDateTime, toOrFrom, minDate, }) => {
     const [date, setDate] = React.useState(undefined);
     const [openDate, setOpenDate] = React.useState(false);
     const [openTime, setOpenTime] = React.useState(false);
@@ -15,6 +15,9 @@ const DateTimePicker = ({ changeDateTime, toOrFrom, minDate,}) => {
 
     const onConfirmDate = (params) => {
         setOpenDate(false);
+        if (params.date === undefined) {
+            return
+        }
         setDate(new Date(params.date));
     }
 

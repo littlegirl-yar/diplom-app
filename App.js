@@ -1,14 +1,14 @@
 import React from 'react';
 import Navigation from './src/components/Navigation';
-import {AuthProvider} from './src/context/AuthContext';
-import { Provider as PaperProvider } from 'react-native-paper';
+import { AuthProvider } from './src/context/AuthContext';
+import { ThemeProvider } from './src/context/ThemeContext';
 
 const App = () => {
   return (
     <AuthProvider>
-      <PaperProvider>
+      <ThemeProvider>
         <Navigation />
-      </PaperProvider>
+      </ThemeProvider>
     </AuthProvider>
   );
 };

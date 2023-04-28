@@ -49,6 +49,11 @@ const GarageScreen = ({ route, navigation }) => {
   }
 
   const showSpots = () => {
+    console.log(toDate)
+    if (toDate < new Date() || fromDate < new Date() || toDate.getTime() === fromDate.getTime()) {
+      console.log("cant show spots")
+      return
+    }
     navigation.navigate('Spots', {
       garageId: garageId,
       start: fromDate.toISOString(),
@@ -92,10 +97,10 @@ const GarageScreen = ({ route, navigation }) => {
           />
         </View>
         <View style={[styles.sectionContainer, { alignItems: "center" }]}>
-        <Button onPress={() => { showSpots() }} mode="contained" buttonColor='royalblue' textColor='white'>
-          Show available spots
-        </Button>
-      </View>
+          <Button onPress={() => { showSpots() }} mode="contained" buttonColor='royalblue' textColor='white'>
+            Show available spots
+          </Button>
+        </View>
       </> : null}
     </View>
   );
@@ -113,12 +118,12 @@ const styles = StyleSheet.create({
   sectionContainer: {
     width: '91%',
     alignItems: "flex-start",
-    marginVertical:7,
+    marginVertical: 7,
   },
-  title:{
-    fontSize:20,
-    fontWeight:"bold",
-    marginBottom:30,
+  title: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 30,
   },
 });
 

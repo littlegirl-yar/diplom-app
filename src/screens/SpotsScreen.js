@@ -44,20 +44,20 @@ const SpotsScreen = ({ route, navigation }) => {
   const selectSpot = async (sId) => {
     try {
 
-      if(sId === selectedSpotId) return;
+      if (sId === selectedSpotId) return;
       setSelectedSpotId(sId);
       setSpotsInfoLoading(true);
-      
-      let response = await axios.post(`${BASE_URL}/reservations`, {start: start, end: end, spot_id: sId});
+
+      let response = await axios.post(`${BASE_URL}/reservations`, { start: start, end: end, spot_id: sId });
       let reservationResponse = response.data.data;
       console.log(reservationResponse);
       setReservationId(reservationResponse.id);
-      
-      response = await axios.post(`${BASE_URL}/calculate-payment`, {reservation_id: reservationResponse.id});
+
+      response = await axios.post(`${BASE_URL}/calculate-payment`, { reservation_id: reservationResponse.id });
       let priceResponse = response.data;
       console.log(priceResponse);
       setPrice(priceResponse)
-      
+
       setSpotsInfoLoading(false);
     }
     catch (error) {
@@ -68,6 +68,10 @@ const SpotsScreen = ({ route, navigation }) => {
 
   const getCheckoutFrom = async () => {
     try {
+      if (price === null) {
+        console.log("ffffff")
+        return;
+      }
       setSpotsInfoLoading(true);
       const response = await axios.get(`${BASE_URL}/checkout/${reservationId}`);
       let stripeResponse = response.data;
@@ -96,32 +100,32 @@ const SpotsScreen = ({ route, navigation }) => {
           {spots && <>
             <Text style={styles.title}>{spots.length} Spots available</Text>
             <View style={styles.priceContainer}>
-              <Text style={styles.priceText}>Price: {price/100}$</Text>
-              <Button onPress={() => {getCheckoutFrom()}} mode="contained" buttonColor='royalblue' textColor='white'>Continue to payment</Button>
+              <Text style={styles.priceText}>Price: {price / 100}$</Text>
+              <Button onPress={() => { getCheckoutFrom() }} mode="contained" buttonColor='royalblue' textColor='white'>Continue to payment</Button>
             </View>
           </>}
-          {spots && spots.map((s,i) => 
-          <>
-            <TouchableRipple key={s.id} style={styles.ripple} rippleColor="rgba(0, 0, 0, .32)" onPress={() => {selectSpot(s.id)}} borderless>
-              <Surface style={[styles.spotSurface, s.id === selectedSpotId? styles.spotSelected : null ]} elevation={4} >
-                    <Text style={styles.spotText}>
-                      <Text>Floor </Text>
-                      <Text style={{fontWeight:"bold"}}>{s.floor}</Text>
-                    </Text>
-                    <Text style={styles.spotText}>
-                      <Text>Spot no. </Text>
-                      <Text style={{fontWeight:"bold"}}>{s.number}</Text>
-                    </Text>
-                    <View style={styles.rowChips}>
-                      {
-                        s.attributes.map((a,ai) => 
-                          <Chip onPress={() => {}} style={styles.chip} textStyle={{color:"royalblue"}} key={ai}>{a}</Chip>
-                        )
-                      }
-                    </View>
-                  </Surface>
+          {spots && spots.map((s, i) =>
+
+            <TouchableRipple key={s.id} style={styles.ripple} rippleColor="rgba(0, 0, 0, .32)" onPress={() => { selectSpot(s.id) }} borderless>
+              <Surface style={[styles.spotSurface, s.id === selectedSpotId ? styles.spotSelected : null]} elevation={2} >
+                <Text style={styles.spotText}>
+                  <Text>Floor </Text>
+                  <Text style={{ fontWeight: "bold" }}>{s.floor}</Text>
+                </Text>
+                <Text style={styles.spotText}>
+                  <Text>Spot no. </Text>
+                  <Text style={{ fontWeight: "bold" }}>{s.number}</Text>
+                </Text>
+                <View style={styles.rowChips}>
+                  {
+                    s.attributes.map((a, ai) =>
+                      <Chip elevated={true} onPress={() => { }} style={styles.chip} textStyle={{ color: "royalblue" }} key={ai}>{a}</Chip>
+                    )
+                  }
+                </View>
+              </Surface>
             </TouchableRipple>
-          </> 
+
           )}
         </View>
       </View>
@@ -160,29 +164,29 @@ const styles = StyleSheet.create({
     marginBottom: 7,
     borderWidth: 1
   },
-  spotSelected:{
-    borderColor:"royalblue",
+  spotSelected: {
+    borderColor: "royalblue",
   },
   spotText: {
     fontSize: 16,
     marginBottom: 5
   },
-  title:{
-    fontSize:20,
-    fontWeight:"bold",
-    marginBottom:20,
+  title: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 20,
     color: "green"
   },
-  priceContainer:{
+  priceContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems:"center",
+    alignItems: "center",
     width: "100%",
-    marginBottom:20
+    marginBottom: 20
   },
   priceText: {
     fontSize: 20,
-    fontWeight:"bold"
+    fontWeight: "bold"
   },
 });
 

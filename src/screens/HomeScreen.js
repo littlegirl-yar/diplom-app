@@ -3,9 +3,12 @@ import { StyleSheet, View } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { AuthContext } from '../context/AuthContext';
 import { Text, TouchableRipple, Surface } from 'react-native-paper';
+import { ThemeContext } from '../context/ThemeContext';
 
 const HomeScreen = ({ navigation }) => {
   const { userInfo, apiToken, isLoading, logout } = useContext(AuthContext);
+
+  const { toggleTheme, isThemeDark } = React.useContext(ThemeContext);
 
   return (
     <View style={styles.container}>
@@ -14,8 +17,13 @@ const HomeScreen = ({ navigation }) => {
         <Text style={{ fontSize: 24, fontWeight: "bold" }}>Welcome {userInfo.name}</Text>
       </View>
       <Surface style={[styles.surface, { marginTop: 0 }]} elevation={4}>
-        <TouchableRipple style={styles.ripple} rippleColor="rgba(0, 0, 0, .32)" onPress={() => { }} borderless>
+        <TouchableRipple style={styles.ripple} rippleColor="rgba(0, 0, 0, .32)" onPress={() => {toggleTheme() }} borderless>
           <Text style={styles.buttonText}>My reservations</Text>
+        </TouchableRipple>
+      </Surface>
+      <Surface style={styles.surface} elevation={4}>
+        <TouchableRipple style={styles.ripple} rippleColor="rgba(0, 0, 0, .32)" onPress={() => {toggleTheme() }} borderless>
+          <Text style={styles.buttonText}>{isThemeDark ? 'Switch to Light' : 'Switch to Dark'}</Text>
         </TouchableRipple>
       </Surface>
       <Surface style={styles.surface} elevation={4}>

@@ -1,12 +1,12 @@
-import React, { useContext, useEffect, useState, } from 'react';
-import { StyleSheet, View, ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
-import { AuthContext } from '../context/AuthContext';
-import { Text, TouchableRipple, Surface, Button, Checkbox, SegmentedButtons } from 'react-native-paper';
+import { Text, Button, SegmentedButtons } from 'react-native-paper';
 import DateTimePicker from '../components/DateTimePicker';
 import CheckBoxRow from '../components/CheckBoxRow';
 import axios from 'axios';
 import { BASE_URL } from '../config';
+import { useToast } from "react-native-toast-notifications";
 
 const GarageScreen = ({ route, navigation }) => {
   const { garageId } = route.params;
@@ -15,7 +15,8 @@ const GarageScreen = ({ route, navigation }) => {
   const [toDate, setToDate] = useState(new Date());
   const [fromDate, setFromDate] = useState(new Date());
   const [options, setOptions] = useState([]);
-  const [size, setSize] = React.useState('small');
+  const [size, setSize] = useState('small');
+  const toast = useToast();
 
   const changeOptions = (option, checked) => {
     if (!checked) {
@@ -43,14 +44,14 @@ const GarageScreen = ({ route, navigation }) => {
       setGarageInfoLoading(false);
     }
     catch (error) {
-      console.log(`register error ${error}`);
+      toast.show(error.message, { type: 'danger' });
       setGarageInfoLoading(false);
     }
   }
 
   const showSpots = () => {
     if (toDate < new Date() || fromDate < new Date() || toDate.getTime() === fromDate.getTime() || fromDate > toDate) {
-      console.log("cant show spots")
+      toast.show("Pick valid dates", { type: 'warning' });
       return
     }
     navigation.navigate('Spots', {

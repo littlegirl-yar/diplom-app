@@ -1,5 +1,4 @@
 import React, { useContext, } from 'react';
-import { Appearance } from 'react-native';
 import { NavigationContainer, DarkTheme as NavigationDarkTheme, DefaultTheme as NavigationDefaultTheme, } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -13,10 +12,10 @@ import SplashScreen from '../screens/SplashScreen';
 import MapScreen from '../screens/MapScreen';
 import GarageScreen from '../screens/GarageScreen';
 import SpotsScreen from '../screens/SpotsScreen';
+import ReservationsScreen from '../screens/ReservationsScreen';
 import { AuthContext } from '../context/AuthContext';
 import { ThemeContext } from '../context/ThemeContext';
 import { Provider as PaperProvider } from 'react-native-paper';
-import ReservationsScreen from '../screens/ReservationsScreen';
 
 const MapStack = createNativeStackNavigator();
 
@@ -67,8 +66,6 @@ function TabNavigation() {
 }
 
 const AuthStack = createNativeStackNavigator();
-
-//const colorScheme = Appearance.getColorScheme();
 
 const { LightTheme, DarkTheme } = adaptNavigationTheme({
   reactNavigationLight: NavigationDefaultTheme,

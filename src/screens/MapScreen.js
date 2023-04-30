@@ -6,6 +6,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import { AuthContext } from '../context/AuthContext';
 import MapView from 'react-native-maps';
 import { Marker } from 'react-native-maps';
+import { useToast } from "react-native-toast-notifications";
 
 
 const MapScreen = ({ navigation, route }) => {
@@ -14,6 +15,7 @@ const MapScreen = ({ navigation, route }) => {
   const [garages, setGarages] = useState([]);
   const mapRef = useRef(null);
   const zoomCords = route.params;
+  const toast = useToast();
 
   const romaniaRegion = {
     latitude: 45.687800156448056,
@@ -31,7 +33,7 @@ const MapScreen = ({ navigation, route }) => {
       setGaragesLoading(false);
     }
     catch (error) {
-      console.log(`register error ${error}`);
+      toast.show(error.message, { type: 'danger' });
       setGaragesLoading(false);
     }
   }

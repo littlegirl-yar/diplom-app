@@ -1,26 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, ScrollView } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
-import { Text, TouchableRipple, Surface, Button, Chip } from 'react-native-paper';;
+import { Text, TouchableRipple, Surface } from 'react-native-paper';;
 import axios from 'axios';
 import { BASE_URL } from '../config';
+import { useToast } from "react-native-toast-notifications";
 
 const ReservationsScreen = ({ navigation }) => {
   const [infoLoading, setInfoLoading] = useState(true);
   const [reservations, setReservations] = useState(undefined);
+  const toast = useToast();
 
   const getSpots = async () => {
     try {
       setInfoLoading(true);
       const response = await axios.get(`${BASE_URL}/reservations`);
       let reservationResponse = response.data.data;
-      console.log(reservationResponse);
       setReservations(reservationResponse);
       setInfoLoading(false);
-      console.log(reservationResponse[0].end)
     }
     catch (error) {
-      console.log(`register error ${error}`);
+      toast.show(error.message, { type: 'danger' });
       setInfoLoading(false);
     }
   }
@@ -35,24 +35,20 @@ const ReservationsScreen = ({ navigation }) => {
     return stringDate
   }
 
-
   useEffect(() => {
     getSpots();
   }, []);
 
-
   const gotToMap = async (garageId) => {
     try {
       setInfoLoading(true);
-      console.log(garageId)
       const response = await axios.get(`${BASE_URL}/garages/${garageId}/coordinates`);
       let cordsResponse = response.data;
-      console.log(cordsResponse);
       setInfoLoading(false);
       navigation.navigate('Map', { zoomCords: { lat: cordsResponse.lat, lng: cordsResponse.lng } })
     }
     catch (error) {
-      console.log(`register error ${error}`);
+      toast.show(error.message, { type: 'danger' });
       setInfoLoading(false);
     }
   }

@@ -6,14 +6,13 @@ import { Text, TouchableRipple, Surface } from 'react-native-paper';
 import { ThemeContext } from '../context/ThemeContext';
 
 const HomeScreen = ({ navigation }) => {
-  const { userInfo, apiToken, isLoading, logout } = useContext(AuthContext);
-
-  const { toggleTheme, isThemeDark } = React.useContext(ThemeContext);
+  const { userInfo, isLoading, logout } = useContext(AuthContext);
+  const { toggleTheme, isThemeDark } = useContext(ThemeContext);
 
   return (
     <View style={styles.container}>
       <Spinner visible={isLoading} />
-      <View style={styles.wolcomContainer}>
+      <View style={styles.welcomContainer}>
         <Text style={{ fontSize: 24, fontWeight: "bold" }}>Welcome {userInfo.name}</Text>
       </View>
       <Surface style={[styles.surface, { marginTop: 0 }]} elevation={4}>
@@ -44,7 +43,7 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 20,
   },
-  wolcomContainer: {
+  welcomContainer: {
     marginVertical: 10,
     width: '91%',
     alignItems: "center",

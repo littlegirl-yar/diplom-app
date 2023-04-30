@@ -5,6 +5,7 @@ import { Text, TouchableRipple, Surface, Button, Chip } from 'react-native-paper
 import axios from 'axios';
 import { BASE_URL } from '../config';
 import * as WebBrowser from 'expo-web-browser';
+import { useToast } from "react-native-toast-notifications";
 
 const SpotsScreen = ({ route, navigation }) => {
   const { garageId, start, end, options, size } = route.params;
@@ -14,6 +15,7 @@ const SpotsScreen = ({ route, navigation }) => {
   const [reservationId, setReservationId] = useState(undefined);
   const [price, setPrice] = useState(null);
   const [resultWeb, setResultWeb] = useState(null);
+  const toast = useToast();
 
   const buildFilterUrl = () => {
     const searchParams = new URLSearchParams();
@@ -31,37 +33,33 @@ const SpotsScreen = ({ route, navigation }) => {
       setSpotsInfoLoading(true);
       const response = await axios.get(`${BASE_URL}/garages/${garageId}/spots?${buildFilterUrl()}`);
       let spotsResponse = response.data.data;
-      console.log(spotsResponse);
       setSpots(spotsResponse);
       setSpotsInfoLoading(false);
     }
     catch (error) {
-      console.log(`register error ${error}`);
+      toast.show(error.response.data.message + '' + Object.values(error.response.data.errors), { type: 'danger' });
       setSpotsInfoLoading(false);
     }
   }
 
   const selectSpot = async (sId) => {
     try {
-
       if (sId === selectedSpotId) return;
       setSelectedSpotId(sId);
       setSpotsInfoLoading(true);
 
       let response = await axios.post(`${BASE_URL}/reservations`, { start: start, end: end, spot_id: sId });
       let reservationResponse = response.data.data;
-      console.log(reservationResponse);
       setReservationId(reservationResponse.id);
 
       response = await axios.post(`${BASE_URL}/calculate-payment`, { reservation_id: reservationResponse.id });
       let priceResponse = response.data;
-      console.log(priceResponse);
       setPrice(priceResponse)
 
       setSpotsInfoLoading(false);
     }
     catch (error) {
-      console.log(`register error ${error}`);
+      toast.show(error.response.data.message, { type: 'danger' });
       setSpotsInfoLoading(false);
     }
   }
@@ -69,21 +67,19 @@ const SpotsScreen = ({ route, navigation }) => {
   const getCheckoutFrom = async () => {
     try {
       if (price === null) {
-        console.log("ffffff")
+        toast.show('Select a spot, please', { type: 'warning' });
         return;
       }
       setSpotsInfoLoading(true);
       const response = await axios.get(`${BASE_URL}/checkout/${reservationId}`);
       let stripeResponse = response.data;
-      console.log(stripeResponse);
-
       let result = await WebBrowser.openBrowserAsync(stripeResponse.url);
       setResultWeb(result);
       navigation.navigate('Map')
       setSpotsInfoLoading(false);
     }
     catch (error) {
-      console.log(`register error ${error}`);
+      toast.show(error.message, { type: 'danger' });
       setSpotsInfoLoading(false);
     }
   }

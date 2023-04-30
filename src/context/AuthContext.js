@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import React, { createContext, useEffect, useState } from 'react';
+import { useToast } from "react-native-toast-notifications";
 import { BASE_URL } from '../config';
 
 export const AuthContext = createContext();
@@ -10,6 +11,7 @@ export const AuthProvider = ({ children }) => {
   const [userInfo, setUserInfo] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [splashLoading, setSplashLoading] = useState(false);
+  const toast = useToast();
 
   const register = async (name, email, password, password_confirmation) => {
     setIsLoading(true);
@@ -23,7 +25,7 @@ export const AuthProvider = ({ children }) => {
       login(email, password);
     }
     catch (error) {
-      console.log(`register error ${error}`);
+      toast.show(error.response.data.message + '' + Object.values(error.response.data.errors), { type: 'danger' });
       setIsLoading(false);
     }
   };
@@ -36,7 +38,6 @@ export const AuthProvider = ({ children }) => {
         password,
       });
       let apiToken = response.data;
-      console.log(apiToken);
       setApiToken(apiToken);
       AsyncStorage.setItem('apiToken', JSON.stringify(apiToken));
 
@@ -50,7 +51,7 @@ export const AuthProvider = ({ children }) => {
       setIsLoading(false);
     }
     catch (error) {
-      console.log(`loging error ${error}`);
+      toast.show(error.response.data.message, { type: 'danger' });
       setIsLoading(false);
     }
   };
@@ -66,7 +67,7 @@ export const AuthProvider = ({ children }) => {
       setIsLoading(false);
     }
     catch (error) {
-      console.log(`logout error ${error}`);
+      toast.show(error.message, { type: 'danger' });
       setIsLoading(false);
     }
   };
@@ -88,9 +89,9 @@ export const AuthProvider = ({ children }) => {
       }
 
       setSplashLoading(false);
-    } catch (e) {
+    } catch (error) {
+      toast.show(error.message, { type: 'danger' });
       setSplashLoading(false);
-      console.log(`is logged in error ${e}`);
     }
   };
 

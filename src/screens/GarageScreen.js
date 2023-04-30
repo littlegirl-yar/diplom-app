@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, } from 'react';
 import { StyleSheet, View, ScrollView } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { AuthContext } from '../context/AuthContext';
@@ -49,8 +49,7 @@ const GarageScreen = ({ route, navigation }) => {
   }
 
   const showSpots = () => {
-    console.log(toDate)
-    if (toDate < new Date() || fromDate < new Date() || toDate.getTime() === fromDate.getTime()) {
+    if (toDate < new Date() || fromDate < new Date() || toDate.getTime() === fromDate.getTime() || fromDate > toDate) {
       console.log("cant show spots")
       return
     }

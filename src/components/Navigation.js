@@ -16,6 +16,7 @@ import SpotsScreen from '../screens/SpotsScreen';
 import { AuthContext } from '../context/AuthContext';
 import { ThemeContext } from '../context/ThemeContext';
 import { Provider as PaperProvider } from 'react-native-paper';
+import ReservationsScreen from '../screens/ReservationsScreen';
 
 const MapStack = createNativeStackNavigator();
 
@@ -35,6 +36,7 @@ function HomeStackScreen() {
   return (
     <HomeStack.Navigator>
       <HomeStack.Screen name="Home" component={HomeScreen} />
+      <HomeStack.Screen name="Reservations" component={ReservationsScreen} />
     </HomeStack.Navigator>
   );
 }

@@ -17,7 +17,7 @@ const HomeScreen = ({ navigation }) => {
         <Text style={{ fontSize: 24, fontWeight: "bold" }}>Welcome {userInfo.name}</Text>
       </View>
       <Surface style={[styles.surface, { marginTop: 0 }]} elevation={4}>
-        <TouchableRipple style={styles.ripple} rippleColor="rgba(0, 0, 0, .32)" onPress={() => {toggleTheme() }} borderless>
+        <TouchableRipple style={styles.ripple} rippleColor="rgba(0, 0, 0, .32)" onPress={() => {navigation.navigate('Reservations') }} borderless>
           <Text style={styles.buttonText}>My reservations</Text>
         </TouchableRipple>
       </Surface>

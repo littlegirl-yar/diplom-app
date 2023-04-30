@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import axios from 'axios';
 import { BASE_URL } from '../config';
@@ -8,10 +8,19 @@ import MapView from 'react-native-maps';
 import { Marker } from 'react-native-maps';
 
 
-const MapScreen = ({ navigation }) => {
+const MapScreen = ({ navigation, route }) => {
   const { isLoading } = useContext(AuthContext);
   const [garagesLoading, setGaragesLoading] = useState(true);
   const [garages, setGarages] = useState([]);
+  const mapRef = useRef(null);
+  const zoomCords = route.params;
+
+  const romaniaRegion = {
+    latitude: 45.687800156448056,
+    longitude: 25.067980774424424,
+    latitudeDelta: 10,
+    longitudeDelta: 10,
+  };
 
   const getGarages = async () => {
     try {
@@ -31,10 +40,23 @@ const MapScreen = ({ navigation }) => {
     getGarages();
   }, []);
 
+  useEffect(() => {
+    if (zoomCords === undefined) {
+      return;
+    }
+    const zooomRegion = {
+      latitude: zoomCords.zoomCords.lat,
+      longitude: zoomCords.zoomCords.lng,
+      latitudeDelta: 0.05,
+      longitudeDelta: 0.05,
+    };
+    mapRef.current.animateToRegion(zooomRegion, 2 * 1000);
+  }, [zoomCords]);
+
   return (
     <View style={styles.container}>
       <Spinner visible={isLoading || garagesLoading} />
-      <MapView style={styles.map}>
+      <MapView style={styles.map} ref={mapRef} initialRegion={romaniaRegion}>
         {
           garages ? garages.map((g, i) =>
             <Marker visible={garagesLoading}

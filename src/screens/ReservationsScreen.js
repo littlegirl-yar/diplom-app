@@ -66,10 +66,6 @@ const ReservationsScreen = ({ navigation }) => {
             <View key={r.id} style={styles.ripple}>
               <Surface style={[styles.resSurface, new Date(r.end) > new Date() ? styles.resSelected : null]} elevation={2}>
                 <Text style={styles.resText}>
-                  <Text>Id: </Text>
-                  <Text style={{ fontWeight: "bold" }}>{r.id}</Text>
-                </Text>
-                <Text style={styles.resText}>
                   <Text>Uuid: </Text>
                   <Text style={{ fontWeight: "bold" }}>{r.uuid}</Text>
                 </Text>
@@ -80,6 +76,10 @@ const ReservationsScreen = ({ navigation }) => {
                 <Text style={styles.resText}>
                   <Text>End: </Text>
                   <Text style={{ fontWeight: "bold" }}>{formatDateForOutput(new Date(r.end))}</Text>
+                </Text>
+                <Text style={styles.resText}>
+                  <Text>Paid amount: </Text>
+                  <Text style={{ fontWeight: "bold" }}>{r.paid_amount /100}$</Text>
                 </Text>
                 <View style={styles.toMapContainer}>
                   <TouchableRipple rippleColor="rgba(0, 0, 0, .32)" onPress={() => { gotToMap(r.garage_id) }} borderless>
